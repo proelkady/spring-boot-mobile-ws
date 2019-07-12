@@ -2,16 +2,24 @@ package com.proelkady.app.ws.service.impl;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.proelkady.app.ws.UserRepository;
 import com.proelkady.app.ws.io.entiry.UserEntity;
 import com.proelkady.app.ws.service.UserService;
 import com.proelkady.app.ws.shared.UserDto;
+import com.proelkady.app.ws.shared.Utils;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+	@Autowired
+	private Utils utils;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@Autowired
 	private UserRepository userRepository;
 
@@ -22,8 +30,8 @@ public class UserServiceImpl implements UserService {
 		}
 		UserEntity userEntity = new UserEntity();
 		BeanUtils.copyProperties(user, userEntity);
-		userEntity.setEncryptedPassword("s");
-		userEntity.setUserId("testUserId");
+		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		userEntity.setUserId(utils.generateUserId(30));
 
 		UserEntity savedEntity = userRepository.save(userEntity);
 
@@ -32,6 +40,11 @@ public class UserServiceImpl implements UserService {
 
 		return savedDto;
 
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return null;
 	}
 
 }
