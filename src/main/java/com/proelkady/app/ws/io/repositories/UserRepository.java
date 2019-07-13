@@ -9,4 +9,6 @@ import com.proelkady.app.ws.io.entiry.UserEntity;
 public interface UserRepository extends CrudRepository<UserEntity, Long>{
 
 	UserEntity findUserByEmail(String email);
+
+	UserEntity findUserByUserId(String userId);
 }
