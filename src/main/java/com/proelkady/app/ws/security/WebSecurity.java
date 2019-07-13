@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.proelkady.app.ws.service.UserService;
@@ -23,9 +24,13 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable() // csrf is recommended to be enabled in case that the service serve web client (browser)
-		.authorizeRequests().antMatchers(HttpMethod.POST,"/users")
+		.authorizeRequests().antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
 		.permitAll()
-		.anyRequest().authenticated();
+		.anyRequest().authenticated().and()
+		.addFilter(new AuthenticationFilter(authenticationManager()))
+		.addFilter(new AuthorizationFilter(authenticationManager()))
+		.sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS); // don't store the session
 	}
 	
 	@Override

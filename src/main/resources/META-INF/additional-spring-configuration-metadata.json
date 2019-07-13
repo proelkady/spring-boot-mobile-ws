@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "token.secret",
+  "type": "java.lang.String",
+  "description": "secret used to initiate the web token"
+}]}

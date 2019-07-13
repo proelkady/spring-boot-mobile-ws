@@ -6,4 +6,5 @@ import com.proelkady.app.ws.shared.UserDto;
 
 public interface UserService extends UserDetailsService{
 	UserDto createUser(UserDto user);
+	UserDto loadUserByEmail(String email);
 }
