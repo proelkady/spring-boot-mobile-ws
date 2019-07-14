@@ -23,4 +23,8 @@ public class Utils {
 		
 		return returnValue.toString();
 	}
+
+	public String generateUserAddressId(int length) {
+		return generateRandomString(length);
+	}
 }

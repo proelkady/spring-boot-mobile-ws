@@ -3,6 +3,7 @@ package com.proelkady.app.ws.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,15 +38,21 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.findUserByEmail(user.getEmail()) != null) { // make sure that this user doesn't exists
 			throw new UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMsg());
 		}
-		UserEntity userEntity = new UserEntity();
-		BeanUtils.copyProperties(user, userEntity);
+
+		ModelMapper modelMapper = new ModelMapper();
+		UserEntity userEntity = modelMapper.map(user, UserEntity.class);
+		
 		userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		userEntity.setUserId(utils.generateUserId(30));
-
+		if (userEntity.getAddresses() != null) {
+			userEntity.getAddresses().forEach(address -> {
+				address.setAddressId(utils.generateUserAddressId(30));
+				address.setUserDetails(userEntity);
+			});
+		}
 		UserEntity savedEntity = userRepository.save(userEntity);
 
-		UserDto savedDto = new UserDto();
-		BeanUtils.copyProperties(savedEntity, savedDto);
+		UserDto savedDto = modelMapper.map(savedEntity, UserDto.class);
 
 		return savedDto;
 
@@ -107,16 +114,16 @@ public class UserServiceImpl implements UserService {
 	public List<UserDto> getUsers(int page, int limit) {
 		List<UserDto> returnValues = new ArrayList<>();
 		Pageable pageableRequest = PageRequest.of(page, limit);
-		
+
 		Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
 		List<UserEntity> users = usersPage.getContent();
-		
-        for (UserEntity userEntity : users) {
-            UserDto userDto = new UserDto();
-            BeanUtils.copyProperties(userEntity, userDto);
-            returnValues.add(userDto);
-        }
-		
+
+		for (UserEntity userEntity : users) {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(userEntity, userDto);
+			returnValues.add(userDto);
+		}
+
 		return returnValues;
 	}
 

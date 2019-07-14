@@ -4,6 +4,7 @@ package com.proelkady.app.ws.ui.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import com.proelkady.app.ws.ui.model.response.ErrorMessages;
 import com.proelkady.app.ws.ui.model.response.OperationSatusModel;
 import com.proelkady.app.ws.ui.model.response.RequestOperation;
 import com.proelkady.app.ws.ui.model.response.RequestStatus;
+import com.proelkady.app.ws.ui.model.response.UserAddressRest;
 import com.proelkady.app.ws.ui.model.response.UserRest;
 
 @RestController
@@ -46,6 +48,14 @@ public class UserController {
 		});
 		return returnValue;
 	}
+	
+	//http://localhost:8080/mobile-app-ws/users/asdfasdfsgasfdsadfasf/addresses
+	@GetMapping(path="/{userId}/addresses", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public List<UserAddressRest> getUserAddresses(@PathVariable String userId) {
+		ModelMapper modelMapper = new ModelMapper();
+		
+		return null;
+	}
 
 	@GetMapping(path = "/{userId}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public UserRest getUser(@PathVariable String userId) {
@@ -53,8 +63,8 @@ public class UserController {
 			throw new RuntimeException("userId can't be null");
 		}
 		UserDto userDto = userService.findUserById(userId);
-		UserRest userRest = new UserRest();
-		BeanUtils.copyProperties(userDto, userRest);
+		ModelMapper modelMapper = new ModelMapper();
+		UserRest userRest = modelMapper.map(userDto, UserRest.class);
 		return userRest;
 	}
 
@@ -63,13 +73,12 @@ public class UserController {
 	public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws UserServiceException {
 		if (userDetails.getFirstName().isEmpty())
 			throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMsg());
-		UserRest returnedValue = new UserRest();
 
-		UserDto userDto = new UserDto();
-		BeanUtils.copyProperties(userDetails, userDto);
+		ModelMapper modelMapper = new ModelMapper();
+		UserDto userDto = modelMapper.map(userDetails, UserDto.class);
 
 		UserDto createdUser = userService.createUser(userDto);
-		BeanUtils.copyProperties(createdUser, returnedValue);
+		UserRest returnedValue = modelMapper.map(createdUser, UserRest.class);
 
 		return returnedValue;
 	}

@@ -1,6 +1,7 @@
 package com.proelkady.app.ws.shared;
 
 import java.io.Serializable;
+import java.util.List;
 
 // data transfer object
 public class UserDto implements Serializable {
@@ -15,6 +16,7 @@ public class UserDto implements Serializable {
 	private String encryptedPassword;
 	private String emailVerificationToken;
 	private Boolean emailVerificationStatus = false;
+	private List<UserAddressDto> addresses;
 
 	public long getId() {
 		return id;
@@ -86,6 +88,14 @@ public class UserDto implements Serializable {
 
 	public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
 		this.emailVerificationStatus = emailVerificationStatus;
+	}
+
+	public List<UserAddressDto> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<UserAddressDto> addresses) {
+		this.addresses = addresses;
 	}
 
 }
