@@ -7,15 +7,21 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import com.proelkady.app.ws.shared.UserDto;
 
 public interface UserService extends UserDetailsService {
-	UserDto createUser(UserDto user);
+    UserDto createUser(UserDto user);
 
-	UserDto loadUserByEmail(String email);
+    UserDto loadUserByEmail(String email);
 
-	UserDto findUserById(String userId);
+    UserDto findUserById(String userId);
 
-	UserDto updateUser(String userId, UserDto userDto);
+    UserDto updateUser(String userId, UserDto userDto);
 
-	void deleteUser(String userId);
+    void deleteUser(String userId);
 
-	List<UserDto> getUsers(int page, int limit);
+    List<UserDto> getUsers(int page, int limit);
+
+    boolean verifyEmailToken(String token);
+
+    boolean requestPasswordReset(String email);
+
+    boolean resetPassword(String token, String password);
 }

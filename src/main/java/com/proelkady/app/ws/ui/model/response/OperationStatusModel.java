@@ -1,14 +1,14 @@
 package com.proelkady.app.ws.ui.model.response;
 
-public class OperationSatusModel {
+public class OperationStatusModel {
 	private String operationName;
 	private String operationResult;
 
-	public OperationSatusModel() {
+	public OperationStatusModel() {
 		super();
 	}
 
-	public OperationSatusModel(String operationName, String operationResult) {
+	public OperationStatusModel(String operationName, String operationResult) {
 		super();
 		this.operationName = operationName;
 		this.operationResult = operationResult;
